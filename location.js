@@ -1,5 +1,5 @@
 var request = require('request');
-var url = "http://api.openweathermap.org/data/2.5/weather?q=London,uk&units=metric&appid=b1b15e88fa797225412429c1c50c122a";
+var url = 'http://ipinfo.io';
 
 module.exports = function(callback) {
     request({
@@ -10,7 +10,7 @@ module.exports = function(callback) {
          callback('An error has occured');   
         } else {
          //console.log(JSON.stringify(body, null, 4));
-         callback("It is " + body.main.temp + " degrees in " + body.name);
+         callback(body);
         }
     })
 }
