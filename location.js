@@ -10,7 +10,7 @@ module.exports = function(callback) {
          callback('An error has occured');   
         } else {
          //console.log(JSON.stringify(body, null, 4));
-         callback(body);
+         callback(body.city);
         }
     })
 }
