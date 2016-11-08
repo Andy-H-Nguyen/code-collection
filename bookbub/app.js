@@ -1,46 +1,87 @@
 var fs = require('fs');
 
+var Classifier = function() {
 
-var keywordDictionary = {};
-
-/* Reads into hash array
- * keywordDictionary.(:keyword).(:genre).(:value);
- */
-function readKeywordCSV() {
-    // CSV data
-    var fileContents = fs.readFileSync('./test-data/sample_genre_keyword_value.csv');
-    var lines = fileContents.toString().split('\n');
+    var keywordDictionary = {};
+    var titlePointDictionary ={};
     
-    // Remove column header
-    lines.splice(0,1);
+    /* Reads into hash array of the form:
+     * keywordDictionary.(:keyword).(:genre).(:value);
+     */
+    function readKeywordCSV() {
+        // CSV data
+        var fileContents = fs.readFileSync('./test-data/sample_genre_keyword_value.csv');
+        var lines = fileContents.toString().split('\n');
+        
+        // Remove column header
+        lines.splice(0,1);
+        
+        // Variables in loop
+        var genreName;
+        var genreKeyword;
+        var genreValue;
     
-    // Variables in loop
-    var line;
-    var genreName;
-    var genreKeyword;
-    var genreValue;
-
-    for (var i = 0; i < lines.length; i++) {
-        genreName = lines[i].toString().split(',')[0].trim();
-        genreKeyword = lines[i].toString().split(',')[1].trim();
-        genreValue = lines[i].toString().split(',')[2].trim();
-        
-        if (!keywordDictionary[genreKeyword]) {
-            keywordDictionary[genreKeyword] = {};
+        for (var i = 0; i < lines.length; i++) {
+            genreName = lines[i].toString().split(',')[0].trim();
+            genreKeyword = lines[i].toString().split(',')[1].trim();
+            genreValue = lines[i].toString().split(',')[2].trim();
+            
+            if (!keywordDictionary[genreKeyword]) {
+                keywordDictionary[genreKeyword] = {};
+            }
+            
+            if (!keywordDictionary[genreKeyword][genreName]) {
+                keywordDictionary[genreKeyword][genreName] = {};
+            }
+            
+            keywordDictionary[genreKeyword][genreName] = genreValue;
         }
-        
-        if (!keywordDictionary[genreKeyword][genreName]) {
-            keywordDictionary[genreKeyword][genreName] = {};
-        }
-        
-        keywordDictionary[genreKeyword][genreName] = genreValue;
     }
-    console.log(keywordDictionary);
+    
+    /** 
+     * Reads into hash array of the form:
+     * titlePointDictionary.(:title).(:genre).(:value);
+     */
+    function classifyJSON() {
+        var json = JSON.parse(fs.readFileSync('./test-data/sample_book_json.txt', 'utf8'));
+        
+        // Variables in loop
+        var genreValue;
+        
+        for (var i=0; i<json.length; i++) {
+            if(!titlePointDictionary[json[i].title]) {
+                titlePointDictionary[json[i].title] = {};
+            }
+                
+            Object.keys(keywordDictionary).forEach(function (keyword) {
+                Object.keys(keywordDictionary[keyword]).forEach(function (genre) {
+                    genreValue = keywordDictionary[keyword][genre] * countFrequency(json[i].description, keyword);
+                    
+                    if (genreValue != 0) {
+                        titlePointDictionary[json[i].title][genre] = genreValue;
+                    }
+                });
+            });
+        }
+    }
+    
+    /**
+     * Returns the result of the classification
+     */
+    this.getResults = function() {
+        readKeywordCSV();
+        classifyJSON();
+        return titlePointDictionary;   
+    }
+    
+    return this;
 }
 
-function classifyJSON() {
-    var json = JSON.parse(fs.readFileSync('./test-data/sample_genre_keyword_value.json', 'utf8'));
-
+/** Returns frequency of word in str
+ */
+function countFrequency(str, word) {
+    return str.split(word).length - 1;
 }
 
-readKeywordCSV();
+var c = new Classifier();
+console.log(c.getResults());
