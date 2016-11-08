@@ -55,10 +55,16 @@ var Classifier = function() {
                 
             Object.keys(keywordDictionary).forEach(function (keyword) {
                 Object.keys(keywordDictionary[keyword]).forEach(function (genre) {
-                    genreValue = keywordDictionary[keyword][genre] * countFrequency(json[i].description, keyword);
+                    genreValue = keywordDictionary[keyword][genre] 
+                               * countFrequency(json[i].description.toLowerCase(), keyword.toLowerCase());
+                    
+                    if (!titlePointDictionary[json[i].title][genre] && genreValue != 0) {
+                        titlePointDictionary[json[i].title][genre] = 0;
+                    }
                     
                     if (genreValue != 0) {
-                        titlePointDictionary[json[i].title][genre] = genreValue;
+                        console.log(keyword + ":" + countFrequency(json[i].description, keyword))
+                        titlePointDictionary[json[i].title][genre] += genreValue;
                     }
                 });
             });
