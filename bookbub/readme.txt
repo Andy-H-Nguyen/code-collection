@@ -11,7 +11,13 @@ In the project directory
 Timeboxed for 2 hours
 
 # Considerations & Tradeoffs
-Invalid input is an issue, what if we have two keywords for the same genre which value should we use?
+Some of the most interesting edge cases is in invalid input:
+- Keywords for one genre appearing multiple times
+- Keywords for one genre appearing multiple times with different value
+- Malformed data
+- Missing files
+
+If given more time, I listed below how I would solve them.
 
 # If given more time
 - Develop Unit tests
