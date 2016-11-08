@@ -1,0 +1,10 @@
+Hi {Company_Name} team,
+
+I just saw your posting on AngelList for a development position and was wondering if you have any internship/coop openings available? (May to August)
+
+I have about ~1 year of experience developing applications using technologies like Ruby on Rails, React, and ASP.NET.
+
+If you'd like to chat please refer to my email on my resume @http://tinyurl.com/zv4458n
+Cheers,
+
+Andy
