@@ -63,7 +63,6 @@ var Classifier = function() {
                     }
                     
                     if (genreValue != 0) {
-                        console.log(keyword + ":" + countFrequency(json[i].description, keyword))
                         titlePointDictionary[json[i].title][genre] += genreValue;
                     }
                 });
